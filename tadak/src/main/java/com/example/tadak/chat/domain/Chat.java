@@ -1,15 +1,16 @@
-package com.example.tadak.chat.entity;
+package com.example.tadak.chat.domain;
 
-import com.example.tadak.room.entity.Room;
 import com.example.tadak.util.Timestamped;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 
 @Getter
-@AllArgsConstructor
+@NoArgsConstructor
 public class Chat extends Timestamped {
+    @Id
     private long id;
-    private Room room;
+    private long room_id;
     private String senderIp;
     private String content;
     private String imgUrl;

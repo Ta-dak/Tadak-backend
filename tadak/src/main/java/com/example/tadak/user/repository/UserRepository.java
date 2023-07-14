@@ -1,4 +1,8 @@
 package com.example.tadak.user.repository;
 
-public interface UserRepository {
+import com.example.tadak.user.domain.User;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+public interface UserRepository extends MongoRepository<User, Long> {
+
 }

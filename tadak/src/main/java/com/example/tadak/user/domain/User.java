@@ -1,6 +1,5 @@
-package com.example.tadak.user.entity;
+package com.example.tadak.user.domain;
 
-import com.example.tadak.user.data.LoginType;
 import com.example.tadak.util.Timestamped;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,12 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class User extends Timestamped {
     private long id;
-
     private String nickname;
-
     private String email;
-
-    private LoginType loginType;
+    private String loginType;
 
 
 }
