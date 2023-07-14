@@ -9,8 +9,8 @@ import org.springframework.data.annotation.Id;
 @NoArgsConstructor
 public class Chat extends Timestamped {
     @Id
-    private long id;
-    private long room_id;
+    private String id;
+    private String roomId;
     private String senderIp;
     private String content;
     private String imgUrl;
