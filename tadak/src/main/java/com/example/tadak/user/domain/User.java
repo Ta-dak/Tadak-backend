@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 public class User extends Timestamped {
@@ -15,10 +18,12 @@ public class User extends Timestamped {
     private String nickname;
     private String email;
     private String loginType;
+    private List<String> roles = new ArrayList<>();
 
     public User(SignupRequestDto requestDto) {
         this.nickname = requestDto.getNickname();
         this.email = requestDto.getEmail();
         this.loginType = requestDto.getLoginType();
+        this.roles.add("USER");
     }
 }
