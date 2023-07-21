@@ -1,5 +1,7 @@
 package com.example.tadak.user.domain;
 
+import com.example.tadak.user.data.LoginType;
+import com.example.tadak.user.data.RoleType;
 import com.example.tadak.user.data.SignupRequestDto;
 import com.example.tadak.util.Timestamped;
 import lombok.Getter;
@@ -20,10 +22,10 @@ public class User extends Timestamped {
     private String loginType;
     private List<String> roles = new ArrayList<>();
 
-    public User(SignupRequestDto requestDto) {
-        this.nickname = requestDto.getNickname();
-        this.email = requestDto.getEmail();
-        this.loginType = requestDto.getLoginType();
-        this.roles.add("USER");
+    public User(String nickname, String email, LoginType loginType) {
+        this.nickname = nickname;
+        this.email = email;
+        this.loginType = loginType.getSocialName();
+        this.roles.add(RoleType.USER.getRole());
     }
 }
