@@ -1,5 +1,6 @@
-package com.example.tadak.auth;
+package com.example.tadak.auth.service;
 
+import com.example.tadak.auth.CustomUserDetails;
 import com.example.tadak.user.domain.User;
 import com.example.tadak.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
