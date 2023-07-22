@@ -1,8 +1,8 @@
 package com.example.tadak.auth.service;
 
 import com.example.tadak.auth.JwtTokenProvider;
-import com.example.tadak.auth.data.GoogleProperty;
-import com.example.tadak.auth.data.GoogleUserInfo;
+import com.example.tadak.auth.data.GoogleUserDto;
+import com.example.tadak.auth.data.KakakoUserDto;
 import com.example.tadak.user.data.LoginResponseDto;
 import com.example.tadak.user.data.SocialType;
 import com.example.tadak.user.domain.User;
@@ -12,15 +12,16 @@ import com.example.tadak.util.CustomException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.example.tadak.util.ResponseCode.*;
 
@@ -33,40 +34,22 @@ public class OAuthService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final NicknameGenerator nicknameGenerator;
-    private final GoogleProperty googleProperty;
+
 
     @Transactional
-    public LoginResponseDto oauthLogin(String token, SocialType socialType) {
-        ResponseEntity<String> userInfoResponse = createGetRequest(token, socialType);
-        var userInfo = getGoogleUserInfo(userInfoResponse);
+    public LoginResponseDto oauthLogin(String oAuthToken, SocialType socialType) {
+        ResponseEntity<String> userInfoResponse = createGetRequest(oAuthToken, socialType);
+        String socialId = getUserSocialId(userInfoResponse, socialType);
 
-        User user = userRepository.findBySocialIdAndSocialType(userInfo.getSub(), socialType.getSocialName())
-                .orElse(new User(nicknameGenerator.generate(), userInfo.getSub(), socialType));
+        User user = userRepository.findBySocialIdAndSocialType(socialId, socialType.getSocialName())
+                .orElse(new User(nicknameGenerator.generate(), socialId, socialType));
         userRepository.save(user);
 
         return new LoginResponseDto(
                 user.getNickname(),
-                user.getSocialId(),
-                user.getSocialType(),
                 jwtTokenProvider.createToken(user));
     }
 
-    public void getSocialAccessToken(String code, String registrationId) {
-        if (registrationId.equals("google"))
-            System.out.println(getGoogleAccessToken(code));
-    }
-
-    private String getGoogleAccessToken(String code) {
-        Map<String, String> params = new HashMap<>();
-        params.put("code", code);
-        params.put("client_id", googleProperty.getClientId());
-        params.put("client_secret", googleProperty.getClientSecret());
-        params.put("redirect_uri", googleProperty.getRedirectUri());
-        params.put("grant_type", "authorization_code");
-
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(googleProperty.getTokenUri(), params, String.class);
-        return responseEntity.getBody();
-    }
 
     private ResponseEntity<String> createGetRequest(String oAuthToken, SocialType socialType) {
         try {
@@ -78,15 +61,23 @@ public class OAuthService {
 
             return restTemplate.exchange(socialType.getUserInfoUrl(), socialType.getMethod(), request, String.class);
         } catch (Exception e) {
-            throw new CustomException(BAD_REQUEST_TOKEN_INVALID);
+            throw new CustomException(SERVER_ERROR_CONNECTION);
         }
     }
 
-    private GoogleUserInfo getGoogleUserInfo(ResponseEntity<String> userInfoResponse) {
+    //TODO
+    public String getUserSocialId(ResponseEntity<String> userInfoResponse, SocialType socialType) {
         try {
-            return objectMapper.readValue(userInfoResponse.getBody(), GoogleUserInfo.class);
+            if (SocialType.KAKAO.equals(socialType)) {
+                KakakoUserDto kakaoUser = objectMapper.readValue(userInfoResponse.getBody(), KakakoUserDto.class);
+                return kakaoUser.getId();
+            } else if (SocialType.GOOGLE.equals(socialType)) {
+                GoogleUserDto googleUser = objectMapper.readValue(userInfoResponse.getBody(), GoogleUserDto.class);
+                return googleUser.getSub();
+            }
+            throw new CustomException(BAD_REQUEST_INVALID_LOGIN_TYPE);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new CustomException(FORBIDDEN_TOKEN_NOT_VALID);
         }
     }
 }
