@@ -1,12 +1,10 @@
 package com.example.tadak.user.domain;
 
-import com.example.tadak.user.data.LoginType;
+import com.example.tadak.user.data.SocialType;
 import com.example.tadak.user.data.RoleType;
-import com.example.tadak.user.data.SignupRequestDto;
 import com.example.tadak.util.Timestamped;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 
 import java.util.ArrayList;
@@ -18,14 +16,14 @@ public class User extends Timestamped {
     @Id
     private String id;
     private String nickname;
-    private String email;
-    private String loginType;
+    private String socialId;
+    private String socialType;
     private List<String> roles = new ArrayList<>();
 
-    public User(String nickname, String email, LoginType loginType) {
+    public User(String nickname, String socialId, SocialType socialType) {
         this.nickname = nickname;
-        this.email = email;
-        this.loginType = loginType.getSocialName();
+        this.socialId = socialId;
+        this.socialType = socialType.getSocialName();
         this.roles.add(RoleType.USER.getRole());
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.http.HttpMethod;
 
 @Getter
 @AllArgsConstructor
-public enum LoginType {
+public enum SocialType {
     GOOGLE(
             "google",
             "https://www.googleapis.com/oauth2/v3/userinfo",
