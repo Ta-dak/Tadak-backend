@@ -3,7 +3,7 @@ package com.example.tadak.user.service;
 import com.example.tadak.auth.JwtTokenProvider;
 import com.example.tadak.auth.service.OAuthService;
 import com.example.tadak.user.data.LoginResponseDto;
-import com.example.tadak.user.data.LoginType;
+import com.example.tadak.user.data.SocialType;
 import com.example.tadak.user.domain.User;
 import com.example.tadak.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,17 +20,17 @@ public class UserService {
     private final NicknameGenerator nicknameGenerator;
 
     @Transactional
-    public LoginResponseDto oauthLogin(String token, LoginType loginType) {
-        ResponseEntity<String> userInfoResponse = oAuthService.createGetRequest(token, loginType);
-        String email = oAuthService.getEmail(userInfoResponse);
+    public LoginResponseDto oauthLogin(String token, SocialType socialType) {
+        ResponseEntity<String> userInfoResponse = oAuthService.createSocialLoginRequest(token, socialType);
+        String socialId = oAuthService.getUserSocialId(userInfoResponse, socialType);
 
-        User user = userRepository.findByEmail(email).orElse(new User(nicknameGenerator.generate(), email, loginType));
+        User user = userRepository.findBySocialId(socialId).orElse(new User(nicknameGenerator.generate(), socialId, socialType));
         userRepository.save(user);
 
         return new LoginResponseDto(
                 user.getNickname(),
-                user.getEmail(),
-                user.getLoginType(),
+                user.getSocialId(),
+                user.getSocialType(),
                 jwtTokenProvider.createToken(user));
     }
 }
