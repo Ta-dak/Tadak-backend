@@ -1,16 +1,14 @@
 package com.example.tadak.auth.data;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Data;
 
-@Getter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
-public class GoogleResponseDto {
-    private String id;
+public class GoogleUserDto {
+    private String sub;
     private String email;
-    private Boolean verifiedEmail;
+    private Boolean emailVerified;
     private String name;
     private String givenName;
     private String familyName;

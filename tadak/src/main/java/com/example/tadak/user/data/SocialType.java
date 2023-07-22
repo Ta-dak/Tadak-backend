@@ -2,6 +2,7 @@ package com.example.tadak.user.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpMethod;
 
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.Map;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public enum SocialType {
     GOOGLE(
             "google",
