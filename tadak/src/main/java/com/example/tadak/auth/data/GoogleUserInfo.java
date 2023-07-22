@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GoogleResponseDto {
-    private String id;
+public class GoogleUserInfo {
+    private String sub;
     private String email;
-    private Boolean verifiedEmail;
+    private Boolean emailVerified;
     private String name;
     private String givenName;
     private String familyName;

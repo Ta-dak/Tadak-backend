@@ -6,18 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.example.tadak.user.data.LoginType.*;
+import static com.example.tadak.user.data.SocialType.*;
 
 @RestController
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-
-    @PostMapping
-    @RequestMapping("/auth/google")
-    public ResponseEntity<LoginResponseDto> googleLogin(@RequestHeader("Authorization") String token) {
-        return ResponseEntity
-                .ok()
-                .body(userService.oauthLogin(token, GOOGLE));
-    }
 }
