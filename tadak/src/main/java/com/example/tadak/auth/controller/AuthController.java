@@ -1,22 +1,16 @@
 package com.example.tadak.auth.controller;
 
 import com.example.tadak.auth.service.OAuthService;
-import com.example.tadak.user.data.LoginResponseDto;
 import com.example.tadak.user.data.SocialType;
-import com.example.tadak.util.ResponseTemplate;
+import com.example.tadak.util.exception.ResponseTemplate;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.example.tadak.user.data.SocialType.GOOGLE;
-import static com.example.tadak.util.ResponseCode.OK_SUCCESS;
+import static com.example.tadak.util.exception.ResponseCode.OK_SUCCESS;
 
 @RestController
 @RequiredArgsConstructor

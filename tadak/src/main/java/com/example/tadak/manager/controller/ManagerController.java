@@ -1,7 +1,7 @@
 package com.example.tadak.manager.controller;
 
 import com.example.tadak.manager.service.ManagerService;
-import com.example.tadak.util.ResponseTemplate;
+import com.example.tadak.util.exception.ResponseTemplate;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.example.tadak.util.ResponseCode.OK_SUCCESS;
+import static com.example.tadak.util.exception.ResponseCode.OK_SUCCESS;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,8 +18,8 @@ public class ManagerController {
     private final ManagerService managerservice;
 
     @Operation(summary = "카카오 Access Token")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "회원가입 성공") })
-    @PostMapping("/auth/kakao")
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "엑세스 토큰 출력 성공") })
+    @GetMapping("/auth/kakao")
     public ResponseEntity<ResponseTemplate> kakaologin(@RequestParam(name = "code") String controllerCode) {
         String accessToken = managerservice.getKakaoAccessToken(controllerCode);
         System.out.println(accessToken);
