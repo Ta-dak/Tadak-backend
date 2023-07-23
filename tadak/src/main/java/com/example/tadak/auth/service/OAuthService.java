@@ -8,7 +8,7 @@ import com.example.tadak.user.data.SocialType;
 import com.example.tadak.user.domain.User;
 import com.example.tadak.user.repository.UserRepository;
 import com.example.tadak.user.service.NicknameGenerator;
-import com.example.tadak.util.CustomException;
+import com.example.tadak.util.exception.CustomException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 
-import static com.example.tadak.util.ResponseCode.*;
+import static com.example.tadak.util.exception.ResponseCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -42,14 +42,13 @@ public class OAuthService {
         String socialId = getUserSocialId(userInfoResponse, socialType);
 
         User user = userRepository.findBySocialIdAndSocialType(socialId, socialType.getSocialName())
-                .orElse(new User(nicknameGenerator.generate(), socialId, socialType));
+                .orElse(new User(nicknameGenerator.generate(6), socialId, socialType));
         userRepository.save(user);
 
         return new LoginResponseDto(
                 user.getNickname(),
                 jwtTokenProvider.createToken(user));
     }
-
 
     private ResponseEntity<String> createGetRequest(String oAuthToken, SocialType socialType) {
         try {

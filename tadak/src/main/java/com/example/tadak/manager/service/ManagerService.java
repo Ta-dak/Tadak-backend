@@ -1,7 +1,7 @@
 package com.example.tadak.manager.service;
 
 import com.example.tadak.auth.data.GoogleProperty;
-import com.example.tadak.util.CustomException;
+import com.example.tadak.util.exception.CustomException;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +16,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.tadak.util.ResponseCode.FORBIDDEN_TOKEN_NOT_VALID;
-import static com.example.tadak.util.ResponseCode.SERVER_ERROR_CONNECTION;
+import static com.example.tadak.util.exception.ResponseCode.FORBIDDEN_TOKEN_NOT_VALID;
+import static com.example.tadak.util.exception.ResponseCode.SERVER_ERROR_CONNECTION;
 
 
 @Service
@@ -30,6 +30,17 @@ public class ManagerService {
     @Value("${oauth2.kakao.rest-api}")
     private String restAPIKey;
 
+    public String getTwitterLoginResult(){
+        String reqURL = "https://api.twitter.com/oauth/request_token";
+//        oauthcallback
+        try {
+            URL url = new URL(reqURL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        } catch (IOException e) {
+            throw new CustomException(SERVER_ERROR_CONNECTION);
+        }
+        return "Twitter";
+    }
     public String getKakaoAccessToken(String controllerCode) {
         String reqURL = "https://kauth.kakao.com/oauth/token";
         String accessToken = "";

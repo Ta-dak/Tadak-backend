@@ -1,4 +1,4 @@
-package com.example.tadak.util;
+package com.example.tadak.util.exception;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

@@ -1,4 +1,4 @@
-package com.example.tadak.util;
+package com.example.tadak.util.exception;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
