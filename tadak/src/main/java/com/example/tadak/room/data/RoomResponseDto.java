@@ -1,8 +1,9 @@
 package com.example.tadak.room.data;
 
 import com.example.tadak.room.domain.Room;
-import org.springframework.data.annotation.Id;
+import lombok.Data;
 
+@Data
 public class RoomResponseDto {
     private String id;
     private String title;

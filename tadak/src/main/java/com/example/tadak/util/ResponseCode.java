@@ -18,7 +18,9 @@ public enum ResponseCode {
 
     NOT_FOUND_USER(NOT_FOUND, "해당 유저를 찾을 수 없습니다."),
 
-    SERVER_ERROR_CONNECTION(INTERNAL_SERVER_ERROR, "통신에 실패했습니다.");
+    SERVER_ERROR_CONNECTION(INTERNAL_SERVER_ERROR, "통신에 실패했습니다."),
+
+    SERVER_ERROR_JSON_PARSING(INTERNAL_SERVER_ERROR, "서버에서 JSON 파싱을 실패했습니다.");
 
     private final HttpStatus httpStatus;
     private final String detail;

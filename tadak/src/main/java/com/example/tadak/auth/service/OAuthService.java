@@ -68,21 +68,20 @@ public class OAuthService {
 
     private String getSocialId(ResponseEntity<String> response, SocialType socialType) {
         try {
-            if (socialType.equals(KAKAO)) {
+            if (socialType == KAKAO) {
                 KakaoUserDto kakaoUser = objectMapper.readValue(response.getBody(), KakaoUserDto.class);
                 return kakaoUser.getId();
             }
 
-            if (socialType.equals(GOOGLE)) {
+            if (socialType == GOOGLE) {
                 GoogleUserDto googleUser = objectMapper.readValue(response.getBody(), GoogleUserDto.class);
                 return googleUser.getSub();
             }
 
             TwitterUserDto twitterUser = objectMapper.readValue(response.getBody(), TwitterUserDto.class);
             return twitterUser.getId();
-
         } catch (JsonProcessingException e) {
-            throw new CustomException(FORBIDDEN_TOKEN_NOT_VALID);
+            throw new CustomException(SERVER_ERROR_JSON_PARSING);
         }
     }
 }
