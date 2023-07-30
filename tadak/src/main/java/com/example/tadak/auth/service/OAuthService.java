@@ -2,7 +2,8 @@ package com.example.tadak.auth.service;
 
 import com.example.tadak.auth.JwtTokenProvider;
 import com.example.tadak.auth.data.GoogleUserDto;
-import com.example.tadak.auth.data.KakakoUserDto;
+import com.example.tadak.auth.data.KakaoUserDto;
+import com.example.tadak.auth.data.TwitterUserDto;
 import com.example.tadak.user.data.LoginResponseDto;
 import com.example.tadak.user.data.SocialType;
 import com.example.tadak.user.domain.User;
@@ -23,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 
+import static com.example.tadak.user.data.SocialType.*;
 import static com.example.tadak.util.ResponseCode.*;
 
 @Service
@@ -38,8 +40,8 @@ public class OAuthService {
 
     @Transactional
     public LoginResponseDto oauthLogin(String oAuthToken, SocialType socialType) {
-        ResponseEntity<String> userInfoResponse = createGetRequest(oAuthToken, socialType);
-        String socialId = getUserSocialId(userInfoResponse, socialType);
+        ResponseEntity<String> response = sendUserInfoRequest(oAuthToken, socialType);
+        String socialId = getSocialId(response, socialType);
 
         User user = userRepository.findBySocialIdAndSocialType(socialId, socialType.getSocialName())
                 .orElse(new User(nicknameGenerator.generate(), socialId, socialType));
@@ -50,8 +52,7 @@ public class OAuthService {
                 jwtTokenProvider.createToken(user));
     }
 
-
-    private ResponseEntity<String> createGetRequest(String oAuthToken, SocialType socialType) {
+    private ResponseEntity<String> sendUserInfoRequest(String oAuthToken, SocialType socialType) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.add("Authorization", "Bearer " + oAuthToken);
@@ -65,17 +66,21 @@ public class OAuthService {
         }
     }
 
-    //TODO
-    public String getUserSocialId(ResponseEntity<String> userInfoResponse, SocialType socialType) {
+    private String getSocialId(ResponseEntity<String> response, SocialType socialType) {
         try {
-            if (SocialType.KAKAO.equals(socialType)) {
-                KakakoUserDto kakaoUser = objectMapper.readValue(userInfoResponse.getBody(), KakakoUserDto.class);
+            if (socialType.equals(KAKAO)) {
+                KakaoUserDto kakaoUser = objectMapper.readValue(response.getBody(), KakaoUserDto.class);
                 return kakaoUser.getId();
-            } else if (SocialType.GOOGLE.equals(socialType)) {
-                GoogleUserDto googleUser = objectMapper.readValue(userInfoResponse.getBody(), GoogleUserDto.class);
+            }
+
+            if (socialType.equals(GOOGLE)) {
+                GoogleUserDto googleUser = objectMapper.readValue(response.getBody(), GoogleUserDto.class);
                 return googleUser.getSub();
             }
-            throw new CustomException(BAD_REQUEST_INVALID_LOGIN_TYPE);
+
+            TwitterUserDto twitterUser = objectMapper.readValue(response.getBody(), TwitterUserDto.class);
+            return twitterUser.getId();
+
         } catch (JsonProcessingException e) {
             throw new CustomException(FORBIDDEN_TOKEN_NOT_VALID);
         }

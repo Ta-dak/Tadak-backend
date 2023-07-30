@@ -7,7 +7,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,13 +20,11 @@ import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
-@PropertySource("classpath:application.yml")
 public class JwtTokenProvider {
     private final UserDetailsService userDetailsService;
 
     @Value("${jwt.secret}")
     private String secretKey;
-
     private long validTime = 60 * 60 * 1000L;
 
     @PostConstruct

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KakakoUserDto {
+public class KakaoUserDto {
     String id;
     String connectedAt;
 }
